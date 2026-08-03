@@ -1,0 +1,47 @@
+---
+description: Exigências de segurança para qualquer código novo — injeção, authz, segredos, dados sensíveis, dependências e configuração.
+alwaysApply: true
+---
+
+# Segurança
+
+Toda entrada vinda de fora do processo é não confiável: request, query string,
+header, cookie, webhook, mensagem de fila, arquivo enviado, variável de ambiente
+controlável, resposta de terceiro.
+
+## Nunca
+
+- Montar SQL, comando de shell, caminho de arquivo, HTML ou template por
+  concatenação com entrada não confiável. Use query parametrizada, API de
+  processo com lista de argumentos, resolução de path com validação, escape do
+  motor de template.
+- `eval`, `exec`, `pickle.loads`, deserialização de dados não confiáveis.
+- Segredo, token, chave, senha ou connection string em código, teste, fixture,
+  log ou mensagem de erro. Vem de variável de ambiente ou cofre.
+- PII ou credencial em log, em telemetria ou em resposta de erro ao cliente.
+- MD5/SHA1 ou hash sem salt para senha — use bcrypt, scrypt ou argon2.
+- `Math.random()` / `random` para token, id de sessão ou nonce — use gerador
+  criptográfico.
+- Comparar segredo com `==` — use comparação de tempo constante.
+
+## Sempre
+
+- Validar e tipar a entrada na borda (schema), rejeitando o que não bate.
+- Verificar autorização no servidor, por recurso: quem está pedindo tem direito
+  **sobre este objeto**? Nunca confie em id vindo do cliente sem checar o dono
+  (IDOR).
+- Rate limit em autenticação e em endpoint caro.
+- TLS com verificação de certificado ligada.
+- Privilégio mínimo em IAM, role de banco e permissão de arquivo.
+- Lockfile atualizado junto com o manifesto; dependência nova justificada.
+
+## Configuração
+
+CORS restrito a origens conhecidas (nunca `*` com credenciais); headers de
+segurança preservados; `DEBUG` desligado fora de desenvolvimento; bucket e
+recurso de infra privados por padrão; porta administrativa não exposta.
+
+## Ao revisar
+
+Achado só vale com vetor concreto: quem entra, por onde, o que obtém. Sem vetor,
+é pergunta, não achado.

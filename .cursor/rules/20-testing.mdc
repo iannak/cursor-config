@@ -1,0 +1,43 @@
+---
+description: Exigências de teste — quando é obrigatório, o que cobrir e o que caracteriza teste ruim.
+alwaysApply: true
+---
+
+# Testes
+
+## Obrigatório
+
+- Comportamento novo entra com teste.
+- Correção de bug entra com teste de regressão que **falha sem a correção**.
+  Se o teste passa com e sem o fix, ele não testa o bug.
+- Contrato público alterado (assinatura, retorno, rota, schema, evento) entra
+  com teste do novo contrato.
+- Código removido: remova ou atualize os testes correspondentes; teste órfão que
+  passa por acidente é pior que nenhum.
+
+## O que cobrir além do caminho feliz
+
+Erro e exceção; entrada vazia, nula e inválida; limite inferior e superior; zero
+e negativo; coleção com um e com muitos itens; timeout e indisponibilidade;
+permissão negada; concorrência e reentrada, quando o código as assume.
+
+## O que caracteriza teste ruim
+
+- Assertion vaga: `toBeTruthy()`, `toBeDefined()` sozinho, `assert result`,
+  `assert x is not None`, comparar com valor recalculado dentro do teste.
+- Verificar só que o mock foi chamado, sem verificar o efeito produzido.
+- Mockar tudo até não restar código real sendo exercitado.
+- Acoplar-se a detalhe interno, de modo que qualquer refactor quebra o teste
+  sem que o comportamento tenha mudado.
+- `sleep` fixo, dependência de ordem de execução, `Date.now()`/random sem
+  controle, rede ou banco real sem isolamento.
+- Nome que não descreve o comportamento esperado.
+- `skip` / `only` / `xit` esquecidos.
+
+## Estilo
+
+- Um comportamento por teste. Arrange–Act–Assert visível.
+- Nome no formato "faz X quando Y".
+- Sem lógica condicional dentro do teste.
+- Fixture e factory em vez de literal gigante repetido.
+- Teste é código de produção: vale o mesmo padrão de nomes e clareza.

@@ -1,0 +1,55 @@
+---
+description: Regras de Python.
+globs: **/*.py
+---
+
+# Python
+
+## Tipos e estrutura
+
+- Type hints em toda função pública, incluindo o retorno. `mypy`/`pyright` sem
+  erro novo.
+- Sem `Any` para escapar de tipagem; use `TypedDict`, `Protocol`, `dataclass`
+  ou Pydantic conforme o projeto.
+- `dataclass(frozen=True)` ou Pydantic para dado estruturado — não dicionário
+  solto passeando pelo código.
+- Sem argumento default mutável (`def f(x=[])`). Use `None` e crie dentro.
+- Valide entrada externa com Pydantic ou schema equivalente na borda.
+
+## Erros
+
+- Exceção específica, nunca `except:` nem `except Exception` sem re-raise.
+- Proibido `except ...: pass` silencioso.
+- Preserve o encadeamento: `raise MyError(...) from e`.
+- Exceção de domínio própria em vez de `ValueError` genérico para regra de
+  negócio.
+- Recurso sempre em `with` (context manager).
+
+## Idiomas
+
+- Comprehension quando cabe em uma linha legível; laço explícito quando não.
+- `pathlib` em vez de `os.path`; `enumerate`/`zip` em vez de índice manual.
+- f-string para formatação — exceto em logging, onde se usa `logger.info("x %s", v)`.
+- Sem `import *`; sem estado global mutável em módulo.
+- `logging`, nunca `print`, em código de aplicação.
+
+## Assíncrono
+
+- Não bloqueie o event loop com I/O síncrono ou CPU pesada — use
+  `asyncio.to_thread` / executor.
+- Toda task criada é aguardada ou registrada; nada de task órfã.
+- Timeout explícito em chamada de rede.
+
+## Segurança
+
+- SQL sempre parametrizado; nunca f-string em query.
+- `subprocess` com lista de argumentos e `shell=False`.
+- Nada de `pickle`, `yaml.load` sem `SafeLoader`, ou `eval` sobre entrada
+  externa.
+- `secrets`, não `random`, para token.
+
+## Ferramentas e testes
+
+- Formatação e lint com Ruff/Black conforme o projeto; não brigue com a config.
+- `pytest`: `parametrize` para variações, fixture para setup, `pytest.raises`
+  com `match` para erro esperado. Sem `assert True` nem teste sem assertion.

@@ -1,0 +1,16 @@
+{
+  "_comment": "Copie para .cursor/mcp.json (projeto) ou ~/.cursor/mcp.json (global). Nunca versione o arquivo real com credenciais — use env vars.",
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "${HOME}/workspace"]
+    }
+  }
+}

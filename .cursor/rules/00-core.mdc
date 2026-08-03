@@ -1,0 +1,35 @@
+---
+description: Regras base de trabalho — como entender, mudar e verificar código neste projeto.
+alwaysApply: true
+---
+
+# Base
+
+## Antes de mudar
+
+- Leia o código relevante inteiro antes de editar. Padrão que já existe no
+  projeto vence padrão que você prefere.
+- Respeite `AGENTS.md`, `CONTRIBUTING.md`, config de lint e de formatação.
+- Entenda a intenção da tarefa. Ambiguidade que muda o resultado do trabalho:
+  pergunte. Ambiguidade com leitura óbvia: siga.
+
+## Ao mudar
+
+- Menor mudança que resolve o problema por completo. Sem refactor carona.
+- Sem abstração especulativa e sem opção de configuração que ninguém pediu.
+- Não deixe `TODO`, código morto, import não usado, `console.log`/`print` de
+  depuração ou arquivo temporário no resultado.
+- Não altere formatação de linhas que a tarefa não toca — polui o diff.
+
+## Antes de dizer que terminou
+
+- Rode build, lint e testes. Se falharem, conserte antes de reportar.
+- Releia o próprio `git diff`.
+- Reporte o resultado real: o que passou, o que falhou, o que ficou de fora.
+  Nunca afirme que algo funciona sem ter executado.
+
+## Git
+
+- Commit pequeno e coeso, mensagem no imperativo explicando o *porquê*.
+- Não commite nem faça push sem pedido explícito.
+- Nunca commite segredo, `.env`, credencial ou dump de dados.

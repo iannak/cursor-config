@@ -1,0 +1,9 @@
+# Nunca versionar config de MCP com credencial
+.cursor/mcp.json
+.env
+.env.*
+!.env.example
+
+*.bak
+*.bak.*
+.DS_Store

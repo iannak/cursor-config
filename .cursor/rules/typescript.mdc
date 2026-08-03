@@ -1,0 +1,69 @@
+---
+description: Regras de TypeScript, Node e React.
+globs: **/*.ts,**/*.tsx,**/*.js,**/*.jsx,**/*.mjs,**/*.cjs
+---
+
+# TypeScript / Node / React
+
+## Tipos
+
+- Sem `any`. Se o tipo é desconhecido, use `unknown` e estreite. `any` só com
+  comentário explicando por que não dá para tipar.
+- Sem `as` para calar o compilador; sem `!` (non-null assertion) — trate o caso
+  nulo. Exceção: `as const`.
+- Sem `@ts-ignore`; `@ts-expect-error` só com motivo escrito ao lado.
+- Tipe a fronteira: entrada de API, `JSON.parse`, `process.env` e resposta de
+  terceiro não são confiáveis — valide com Zod (ou equivalente do projeto) e
+  derive o tipo do schema.
+- Union discriminada em vez de campos opcionais que só valem em conjunto.
+- `readonly` em campos que não mudam; evite mutar arrays e objetos recebidos.
+- Tipo explícito no retorno de função exportada.
+
+## Assíncrono
+
+- Nada de promise sem `await` ou sem `.catch`. Em Node, `unhandledRejection`
+  derruba o processo.
+- `await` dentro de laço só quando a ordem importa; caso contrário
+  `Promise.all` / `allSettled`.
+- Toda chamada de rede com timeout e `AbortSignal`.
+- Não misture `async` com callback de `forEach` — use `for...of` ou `map` +
+  `Promise.all`.
+
+## Erros
+
+- Lance `Error` (ou subclasse), nunca string ou objeto solto.
+- Em `catch (e)`, `e` é `unknown`: estreite antes de acessar `.message`.
+- Preserve a causa: `new Error('...', { cause: e })`.
+
+## Geral
+
+- `const` por padrão; `let` só quando reatribui; nunca `var`.
+- `===`. Use `??` e `?.` em vez de checagens manuais de `null`/`undefined`.
+- Sem `export default` em módulo com mais de um símbolo relevante.
+- Sem import de caminho profundo entre camadas — respeite a barreira pública.
+- Sem lógica no import time (side effect em módulo).
+
+## React
+
+- Componente é função pura do estado e das props; nada de mutação de props.
+- Array de dependências do `useEffect` correto e completo. Se você precisa
+  omitir uma dependência, provavelmente o efeito está errado.
+- `useEffect` não é para derivar estado — derive no render ou com `useMemo`.
+- Todo efeito com assinatura/subscription retorna cleanup.
+- `key` estável em lista; nunca o índice quando a lista reordena ou filtra.
+- Chamada de dados fora do componente de apresentação (hook ou camada de
+  serviço), e sempre com estado de loading e de erro tratados.
+- Nunca `dangerouslySetInnerHTML` com conteúdo não sanitizado.
+
+## Node
+
+- Sem `child_process.exec` com string interpolada — use `execFile`/`spawn` com
+  array de argumentos.
+- Valide `process.env` uma vez, na inicialização, com schema.
+- Trate `SIGTERM` para shutdown limpo em serviço de longa duração.
+
+## Testes
+
+Vitest ou Jest conforme o projeto. Teste comportamento observável, não
+implementação. Em React, prefira Testing Library com queries por papel e texto
+acessível — não por classe CSS nem por estrutura de DOM.

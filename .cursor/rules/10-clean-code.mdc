@@ -1,0 +1,70 @@
+---
+description: Princípios de clean code aplicáveis a qualquer linguagem — nomes, funções, estado, erros, duplicação e comentários.
+alwaysApply: true
+---
+
+# Clean code
+
+## Nomes
+
+- O nome diz o que a coisa é ou faz. Se precisa de comentário para explicar o
+  nome, o nome está errado.
+- Nada de `data`, `info`, `obj`, `tmp`, `handle`, `process`, `manager`, `util`
+  como nome principal.
+- Booleano é uma afirmação: `isActive`, `hasPermission`, `shouldRetry`.
+- Função é verbo, classe e variável são substantivos.
+- Nenhuma abreviação além das já consagradas no domínio do projeto.
+- Sem número mágico e sem string mágica: extraia constante nomeada.
+
+## Funções
+
+- Uma responsabilidade por função. Se você descreve o que ela faz usando "e",
+  provavelmente são duas.
+- Se passa de ~30 linhas ou de 3 níveis de indentação, é sinal de que há uma
+  função escondida dentro dela.
+- Mais de 3 parâmetros: agrupe em um objeto/struct com nome.
+- Parâmetro booleano que escolhe comportamento vira duas funções.
+- Evite efeito colateral escondido: função que promete calcular não deve gravar.
+- Saída antecipada (`guard clause`) em vez de `if` aninhado.
+
+## Estado e dados
+
+- Escopo mínimo. Sem estado global mutável.
+- Prefira imutabilidade; não mute argumento recebido.
+- Uma fonte de verdade por dado. Estado derivado se calcula, não se duplica.
+- Modele estados impossíveis como impossíveis, em vez de validar depois.
+
+## Erros
+
+- Trate o erro onde dá para decidir o que fazer com ele; nos outros lugares,
+  propague.
+- Proibido: `catch` vazio, `except: pass`, erro engolido em log de `debug`,
+  retorno `null`/`nil` mudo para sinalizar falha.
+- Mensagem de erro diz o que falhou e com qual entrada — sem vazar segredo nem
+  dado pessoal.
+- Recurso aberto é fechado em `finally`/context manager/`defer`.
+- Chamada assíncrona sempre com `await`/tratamento; nada de promise solta.
+
+## Duplicação e acoplamento
+
+- Regra do três: duplicou pela terceira vez, extraia. Antes disso, duplicação
+  costuma ser mais barata que a abstração errada.
+- Duplicação de *conhecimento* (regra de negócio repetida) extraia já.
+- Camada de fora não conhece detalhe da de dentro: sem SQL no controller, sem
+  chamada de API no componente de UI, sem regra de negócio no template.
+- Dependa de interface, não de implementação concreta, quando houver troca real
+  prevista — não "por precaução".
+
+## Comentários
+
+- Comente o *porquê*, nunca o *o quê*.
+- Comentário que repete o código é ruído; comentário desatualizado é mentira.
+- Código comentado se apaga — o histórico está no git.
+- `TODO` só com contexto e responsável; de preferência, um issue no lugar.
+
+## Sinais de alerta
+
+Se aparecer no diff, questione: função com muitos `if` sobre tipo, classe que só
+tem getters e setters, herança usada para reaproveitar código, `flag` booleana
+espalhada, arquivo `utils` que cresce sem parar, parâmetro passado por três
+camadas só para chegar na quarta.
